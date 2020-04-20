@@ -19,6 +19,7 @@ body {
   &__field {
     width: $gameFieldWidth;
     height: $gameFieldWidth;
+    position: relative;
 
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -146,21 +147,22 @@ body {
   }
 
   &__over {
-    position: fixed;
     display: none;
+    position: absolute;
+    width: 524px;
+    height: 524px;
     box-sizing: border-box;
     justify-content: center;
     align-items: center;
-    top: 11%;
-    left: 50%;
-    width: 600px;
-    height: 600px;
     z-index: 1;
-    transform: translate(-50%, -10%);
-    padding: 20px;
+    padding: 5px;
 
-    border-radius: 20px;
-    background-color: rgba($cellBGColorActive, 0.8);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    background-color: rgba($cellBGColorActive, 0.95);
+    border-radius: $fieldBorder;
   }
 
   &__over--show {

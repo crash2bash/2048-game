@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
       i++;
     }
 
-    game.prepend(gameOverModal);
+    gameField.append(gameOverModal);
     gameOverModal.append(gameOverModalText);
   }
 
