@@ -4,7 +4,7 @@ const game = document.querySelector('.game');
 const randomNumber = () => Math.random() < 0.9 ? 2 : 4;
 const randomIndex = () => Math.floor(Math.random() * 16);
 
-document.addEventListener('DOMContentLoaded', (e) => {
+document.addEventListener('DOMContentLoaded', () => {
   createGame();
 
   const score = document.querySelector('.game__score');
@@ -13,11 +13,14 @@ document.addEventListener('DOMContentLoaded', (e) => {
   const sectionGame = document.querySelector('.game__container');
   const cells = document.querySelectorAll('.game__cell');
   const gameOverModalShow = document.querySelector('.game__over');
+  const highScoreItem = document.querySelector('.game__score--best');
 
   startGame.addEventListener('click', () => {
     init();
 
     document.addEventListener('keydown', (evt) => {
+      evt.preventDefault();
+
       if (evt.key === 'ArrowLeft') {
         moveLeft();
       }
@@ -50,6 +53,12 @@ document.addEventListener('DOMContentLoaded', (e) => {
     const restartButton = document.createElement('button');
     const gameField = document.createElement('div');
     const gameCell = document.createElement('div');
+    const gameOverModal = document.createElement('div');
+    const gameOverModalText = document.createElement('p');
+    const highScore = document.createElement('p');
+    const scoreContainer = document.createElement('div');
+    const scoreText = document.createElement('p');
+    const highScoreText = document.createElement('p');
 
     section.className = 'game__container';
 
@@ -64,8 +73,26 @@ document.addEventListener('DOMContentLoaded', (e) => {
     restartButton.className = 'game__button game__button--restart';
     restartButton.textContent = 'restart';
 
+    gameOverModal.className = 'game__over';
+    gameOverModalText.className = 'game__over-text';
+
+    gameOverModalText.textContent = `Жаль, но вы проиграли!`;
+
+    scoreContainer.className = 'game__score-container';
+
+    highScore.className = 'game__score game__score--best';
+
+    scoreText.className = 'game__score-text';
+    scoreText.textContent = 'Ваш счет:';
+    highScoreText.className = 'game__score-text game__score-text--best';
+    highScoreText.textContent = 'Ваш рекорд:';
+
     game.append(section);
-    section.append(scoreField);
+    section.append(scoreContainer);
+    scoreContainer.append(scoreText);
+    scoreContainer.append(scoreField);
+    scoreContainer.append(highScoreText);
+    scoreContainer.append(highScore);
     section.append(startButton);
     section.append(gameField);
     section.append(restartButton);
@@ -77,14 +104,6 @@ document.addEventListener('DOMContentLoaded', (e) => {
       gameField.append(gameCell.cloneNode(true));
       i++;
     }
-
-    const gameOverModal = document.createElement('div');
-    const gameOverModalText = document.createElement('p');
-
-    gameOverModal.className = 'game__over';
-    gameOverModalText.className = 'game__over-text';
-
-    gameOverModalText.textContent = `Жаль, но вы проиграли!`;
 
     game.prepend(gameOverModal);
     gameOverModal.append(gameOverModalText);
@@ -111,6 +130,12 @@ document.addEventListener('DOMContentLoaded', (e) => {
     cell.textContent = `${firstNumber}`;
     cell2.textContent = `${secondNumber}`;
     updateColors();
+
+    if (localStorage.getItem('highScore') !== null) {
+      highScoreItem.textContent = localStorage.getItem('highScore');
+    } else {
+      localStorage.setItem('highScore', '0');
+    }
   }
 
   function addTile() {
@@ -234,6 +259,16 @@ document.addEventListener('DOMContentLoaded', (e) => {
 
           score.textContent = `${parseInt(score.textContent) + values[i]
           + values[i + 1]}`;
+
+          const newScore = parseInt(score.textContent) + values[i]
+            + values[i + 1];
+
+          score.textContent = newScore;
+
+          if (newScore > parseInt(highScoreItem.textContent)) {
+            localStorage.setItem('highScore', newScore);
+          }
+
           i += 1;
         } else {
           result.push(values[i]);
