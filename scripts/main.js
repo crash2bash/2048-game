@@ -66,12 +66,12 @@ document.addEventListener('DOMContentLoaded', () => {
     scoreField.textContent = '0';
 
     startButton.className = 'game__button game__button--start';
-    startButton.textContent = 'new game';
+    startButton.textContent = 'новая игра';
 
     gameField.className = 'game__field';
 
     restartButton.className = 'game__button game__button--restart';
-    restartButton.textContent = 'restart';
+    restartButton.textContent = 'рестарт';
 
     gameOverModal.className = 'game__over';
     gameOverModalText.className = 'game__over-text';
