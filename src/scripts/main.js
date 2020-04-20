@@ -2,7 +2,7 @@
 
 const game = document.querySelector('.game');
 const startGame = document.querySelector('.game__button--start');
-// const restart = document.querySelector('.game__button--restart');
+const restart = document.querySelector('.game__button--restart');
 const score = document.querySelector('.game__score');
 const cells = document.querySelectorAll('.game__cell');
 const randomNumber = () => Math.random() < 0.9 ? 2 : 4;
@@ -30,6 +30,12 @@ startGame.addEventListener('click', () => {
   });
 });
 
+restart.addEventListener('click', () => {
+  score.textContent = '0';
+
+  init();
+});
+
 function init() {
   cells.forEach(item => {
     item.textContent = '0';
@@ -54,22 +60,26 @@ function init() {
 }
 
 function addTile() {
-  const res = [];
+  const result = [];
 
-  for (let x = 1; x <= 16; x++) {
-    if (document.querySelector(`.game__cell-${x}`).textContent === '0') {
-      res.push(x);
+  for (let i = 1; i <= 16; i++) {
+    if (document.querySelector(`.game__cell-${i}`).textContent === '0') {
+      result.push(i);
     }
   }
 
-  const index = res[Math.floor(Math.random() * res.length)];
+  const index = result[Math.floor(Math.random() * result.length)];
 
-  if (res.length === 0) {
-    game.classList.add('game__over');
+  if (result.length === 0) {
+    if ((!gameCheck())) {
+      gameOver();
+    }
   } else {
     document.querySelector(`.game__cell-${index}`)
       .textContent = `${randomNumber()}`;
   }
+
+  updateColors();
 }
 
 function moveLeft() {
@@ -80,7 +90,10 @@ function moveLeft() {
 
   if (firstIndexes || secondIndexes || thirdIndexes || fourthIndexes) {
     addTile();
-    updateColors();
+  }
+
+  if (!gameCheck()) {
+    gameOver();
   }
 }
 
@@ -92,7 +105,10 @@ function moveRight() {
 
   if (firstIndexes || secondIndexes || thirdIndexes || fourthIndexes) {
     addTile();
-    updateColors();
+  }
+
+  if (!gameCheck()) {
+    gameOver();
   }
 }
 
@@ -104,7 +120,10 @@ function moveUp() {
 
   if (firstIndexes || secondIndexes || thirdIndexes || fourthIndexes) {
     addTile();
-    updateColors();
+  }
+
+  if (!gameCheck()) {
+    gameOver();
   }
 }
 
@@ -116,68 +135,76 @@ function moveDown() {
 
   if (firstIndexes || secondIndexes || thirdIndexes || fourthIndexes) {
     addTile();
-    updateColors();
+  }
+
+  if (!gameCheck()) {
+    gameOver();
   }
 }
 
-function row(aa, bb, cc, dd) {
-  const inputs = [aa, bb, cc, dd];
+function row(firstValue, secondValue, thirdValue, fourthValue) {
+  const inputs = [firstValue, secondValue, thirdValue, fourthValue];
 
-  const a = parseInt(document.querySelector(`.game__cell-${aa}`).innerHTML);
-  const b = parseInt(document.querySelector(`.game__cell-${bb}`).innerHTML);
-  const c = parseInt(document.querySelector(`.game__cell-${cc}`).innerHTML);
-  const d = parseInt(document.querySelector(`.game__cell-${dd}`).innerHTML);
+  const a = parseInt(document.querySelector(`.game__cell-${firstValue}`)
+    .textContent);
+  const b = parseInt(document.querySelector(`.game__cell-${secondValue}`)
+    .textContent);
+  const c = parseInt(document.querySelector(`.game__cell-${thirdValue}`)
+    .textContent);
+  const d = parseInt(document.querySelector(`.game__cell-${fourthValue}`)
+    .textContent);
 
-  const vals = [];
-  const res = [];
+  const values = [];
+  const result = [];
 
   if (a !== 0) {
-    vals.push(a);
+    values.push(a);
   }
 
   if (b !== 0) {
-    vals.push(b);
+    values.push(b);
   }
 
   if (c !== 0) {
-    vals.push(c);
+    values.push(c);
   }
 
   if (d !== 0) {
-    vals.push(d);
+    values.push(d);
   }
 
-  for (let x = 0; x < vals.length; x++) {
-    if (typeof vals[x + 1] !== 'undefined') {
-      if (vals[x] === vals[x + 1]) {
-        res.push(vals[x] + vals[x + 1]);
+  for (let i = 0; i < values.length; i++) {
+    if (typeof values[i + 1] !== 'undefined') {
+      if (values[i] === values[i + 1]) {
+        result.push(values[i] + values[i + 1]);
 
-        score.textContent = `${parseInt(score.textContent) + vals[x]
-        + vals[x + 1]}`;
-        x += 1;
+        score.textContent = `${parseInt(score.textContent) + values[i]
+        + values[i + 1]}`;
+        i += 1;
       } else {
-        res.push(vals[x]);
+        result.push(values[i]);
       }
     } else {
-      res.push(vals[x]);
+      result.push(values[i]);
     }
   }
 
-  let z = 0;
+  let maxLength = 0;
   const input = [a, b, c, d];
   const output = [];
 
-  while (z < res.length) {
-    document.querySelector(`.game__cell-${inputs[z]}`).textContent
-      = `${res[z]}`;
-    output.push(res[z]);
-    z += 1;
+  while (maxLength < result.length) {
+    document.querySelector(`.game__cell-${inputs[maxLength]}`)
+      .textContent = `${result[maxLength]}`;
+    output.push(result[maxLength]);
+    maxLength += 1;
   }
 
-  while (z < 4) {
-    document.querySelector(`.game__cell-${inputs[z]}`).textContent = '0';
+  while (maxLength < 4) {
+    document.querySelector(`.game__cell-${inputs[maxLength]}`)
+      .textContent = '0';
     output.push(0);
-    z += 1;
+    maxLength += 1;
   }
 
   return `${input[0]},${input[1]},${input[2]},${input[3]}`
@@ -186,54 +213,186 @@ function row(aa, bb, cc, dd) {
 
 function updateColors() {
   for (let x = 0; x < 16; x++) {
-    switch (cells[x].textContent === '0') {
+    cells[x].classList.remove('game__cell--two');
+
+    switch (cells[x].textContent >= '0') {
       case cells[x].textContent === '2':
-        cells[x].classList.add('game__cell--active');
+        cells[x].classList.remove('game__cell--eight');
+        cells[x].classList.remove('game__cell--ten');
+        cells[x].classList.remove('game__cell--third');
+        cells[x].classList.remove('game__cell--almost-win');
+        cells[x].classList.add('game__cell--two');
         break;
 
       case cells[x].textContent === '4':
-        cells[x].classList.add('game__cell--active');
+        cells[x].classList.remove('game__cell--eight');
+        cells[x].classList.remove('game__cell--ten');
+        cells[x].classList.remove('game__cell--third');
+        cells[x].classList.remove('game__cell--almost-win');
+        cells[x].classList.add('game__cell--two');
         break;
 
       case cells[x].textContent === '8':
-        cells[x].classList.add('game__cell--active');
+        cells[x].classList.remove('game__cell--two');
+        cells[x].classList.remove('game__cell--ten');
+        cells[x].classList.remove('game__cell--third');
+        cells[x].classList.remove('game__cell--almost-win');
+        cells[x].classList.add('game__cell--eight');
         break;
 
       case cells[x].textContent === '16':
-        cells[x].classList.add('game__cell--active');
+        cells[x].classList.remove('game__cell--two');
+        cells[x].classList.remove('game__cell--ten');
+        cells[x].classList.remove('game__cell--third');
+        cells[x].classList.remove('game__cell--almost-win');
+        cells[x].classList.add('game__cell--eight');
         break;
 
       case cells[x].textContent === '32':
-        cells[x].classList.add('game__cell--active');
+        cells[x].classList.remove('game__cell--two');
+        cells[x].classList.remove('game__cell--ten');
+        cells[x].classList.remove('game__cell--eight');
+        cells[x].classList.remove('game__cell--almost-win');
+        cells[x].classList.add('game__cell--third');
         break;
 
       case cells[x].textContent === '64':
-        cells[x].classList.add('game__cell--active');
+        cells[x].classList.remove('game__cell--two');
+        cells[x].classList.remove('game__cell--ten');
+        cells[x].classList.remove('game__cell--eight');
+        cells[x].classList.remove('game__cell--almost-win');
+        cells[x].classList.add('game__cell--third');
         break;
 
       case cells[x].textContent === '128':
-        cells[x].classList.add('game__cell--active');
+        cells[x].classList.remove('game__cell--almost-win');
+        cells[x].classList.remove('game__cell--two');
+        cells[x].classList.remove('game__cell--third');
+        cells[x].classList.remove('game__cell--eight');
+        cells[x].classList.add('game__cell--ten');
         break;
 
       case cells[x].textContent === '256':
-        cells[x].classList.add('game__cell--active');
+        cells[x].classList.remove('game__cell--almost-win');
+        cells[x].classList.remove('game__cell--two');
+        cells[x].classList.remove('game__cell--third');
+        cells[x].classList.remove('game__cell--eight');
+        cells[x].classList.add('game__cell--ten');
         break;
 
       case cells[x].textContent === '512':
-        cells[x].classList.add('game__cell--active');
+        cells[x].classList.remove('game__cell--ten');
+        cells[x].classList.remove('game__cell--two');
+        cells[x].classList.remove('game__cell--third');
+        cells[x].classList.remove('game__cell--eight');
+        cells[x].classList.add('game__cell--almost-win');
         break;
 
       case cells[x].textContent === '1024':
-        cells[x].classList.add('game__cell--active');
+        cells[x].classList.remove('game__cell--ten');
+        cells[x].classList.remove('game__cell--two');
+        cells[x].classList.remove('game__cell--third');
+        cells[x].classList.remove('game__cell--eight');
+        cells[x].classList.add('game__cell--almost-win');
         break;
 
       case cells[x].textContent === '2048':
-        cells[x].classList.add('game__cell--active');
+        cells[x].classList.remove('game__cell--ten');
+        cells[x].classList.remove('game__cell--two');
+        cells[x].classList.remove('game__cell--third');
+        cells[x].classList.remove('game__cell--eight');
+        cells[x].classList.remove('game__cell--almost-win');
+        cells[x].classList.add('game__cell--win');
+
+        win();
+
         break;
 
-      case cells[x].textContent === '0':
-        cells[x].classList.remove('game__cell--active');
+      default:
+        cells[x].classList.remove('game__cell--two');
+        cells[x].classList.remove('game__cell--eight');
+        cells[x].classList.remove('game__cell--third');
+        cells[x].classList.remove('game__cell--ten');
+        cells[x].classList.remove('game__cell--almost-win');
         break;
     }
   }
+}
+
+function gameCheck() {
+  return rowCheck(1, 2, 3, 4)
+    || rowCheck(5, 6, 7, 8)
+    || rowCheck(9, 10, 11, 12)
+    || rowCheck(13, 14, 15, 16)
+    || rowCheck(4, 3, 2, 1)
+    || rowCheck(8, 7, 6, 5)
+    || rowCheck(12, 11, 10, 9)
+    || rowCheck(16, 15, 14, 13)
+    || rowCheck(1, 5, 9, 13)
+    || rowCheck(2, 6, 10, 14)
+    || rowCheck(3, 7, 11, 15)
+    || rowCheck(4, 8, 12, 16)
+    || rowCheck(13, 9, 5, 1)
+    || rowCheck(14, 10, 6, 2)
+    || rowCheck(15, 11, 7, 3)
+    || rowCheck(16, 12, 8, 4);
+}
+
+function rowCheck(firstValue, secondValue, thirdValue, fourthValue) {
+  const a = parseInt(document.querySelector(`.game__cell-${firstValue}`)
+    .textContent);
+  const b = parseInt(document.querySelector(`.game__cell-${secondValue}`)
+    .textContent);
+  const c = parseInt(document.querySelector(`.game__cell-${thirdValue}`)
+    .textContent);
+  const d = parseInt(document.querySelector(`.game__cell-${fourthValue}`)
+    .textContent);
+
+  const values = [];
+
+  if (a !== 0) {
+    values.push(a);
+  } else {
+    return true;
+  }
+
+  if (b !== 0) {
+    values.push(b);
+  } else {
+    return true;
+  }
+
+  if (c !== 0) {
+    values.push(c);
+  } else {
+    return true;
+  }
+
+  if (d !== 0) {
+    values.push(d);
+  } else {
+    return true;
+  }
+
+  for (let i = 0; i < values.length; i++) {
+    if (typeof values[i + 1] !== 'undefined') {
+      if (values[i] === values[i + 1]) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+function gameOver() {
+  game.classList.add('game__over');
+}
+
+function win() {
+  const winModal = document.createElement('div');
+
+  winModal.className = 'game__win-modal';
+  winModal.textContent = 'Вау, ты сделал это!';
+  game.appendChild(winModal);
 }

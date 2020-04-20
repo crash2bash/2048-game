@@ -41,11 +41,42 @@ body {
 
     color: $cellBGColorStart;
 
-    &--active {
+    &--two {
       background-color: $cellBGColorActive;
-      color: $cellTextColor;
 
       transition: 0.3s ease-in-out;
+    }
+
+    &--eight {
+      background-color: #fa744f;
+      transition: 0.3s ease-in-out;
+    }
+
+    &--third {
+      background-color: #f79071;
+      transition: 0.3s ease-in-out;
+    }
+
+    &--ten {
+      background-color: #f4e04d;
+      transition: 0.3s ease-in-out;
+    }
+
+    &--almost-win {
+      background-color: #b80d57;
+      transition: 0.3s ease-in-out;
+    }
+
+    &--win {
+      background-color: #c81912;
+      transition: 0.3s ease-in-out;
+    }
+
+    &__win-modal {
+      position: fixed;
+      background-color: rgba(#000, 0.7);
+      width: 100%;
+      height: 100vh;
     }
   }
 
