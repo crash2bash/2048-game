@@ -4,13 +4,15 @@ const game = document.querySelector('.game');
 const randomNumber = () => Math.random() < 0.9 ? 2 : 4;
 const randomIndex = () => Math.floor(Math.random() * 16);
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', (e) => {
   createGame();
 
   const score = document.querySelector('.game__score');
   const startGame = document.querySelector('.game__button--start');
   const restart = document.querySelector('.game__button--restart');
+  const sectionGame = document.querySelector('.game__container');
   const cells = document.querySelectorAll('.game__cell');
+  const gameOverModalShow = document.querySelector('.game__over');
 
   startGame.addEventListener('click', () => {
     init();
@@ -36,6 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   restart.addEventListener('click', () => {
     score.textContent = '0';
+    gameOverModalShow.classList.remove('game__over--show');
 
     init();
   });
@@ -74,6 +77,17 @@ document.addEventListener('DOMContentLoaded', () => {
       gameField.append(gameCell.cloneNode(true));
       i++;
     }
+
+    const gameOverModal = document.createElement('div');
+    const gameOverModalText = document.createElement('p');
+
+    gameOverModal.className = 'game__over';
+    gameOverModalText.className = 'game__over-text';
+
+    gameOverModalText.textContent = `Жаль, но вы проиграли!`;
+
+    game.prepend(gameOverModal);
+    gameOverModal.append(gameOverModalText);
   }
 
   function init() {
@@ -426,7 +440,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function gameOver() {
-    game.classList.add('game__over');
+    gameOverModalShow.classList.add('game__over--show');
   }
 
   function win() {
@@ -434,6 +448,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     winModal.className = 'game__win-modal';
     winModal.textContent = 'Вау, ты сделал это!';
-    game.appendChild(winModal);
+    sectionGame.append(winModal);
   }
 });

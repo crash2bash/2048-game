@@ -98,14 +98,57 @@ body {
     color: #fff;
 
     cursor: pointer;
+    outline: none;
+
+    transition: 0.3s ease-in-out;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+
+  &__score {
+    width: 200px;
+    height: 50px;
+    box-sizing: border-box;
+    margin-bottom: 50px;
+    padding-left: 10px;
+    padding-right: 10px;
+
+    font-size: 30px;
+    line-height: 50px;
+
+    background-color: $cellBGColorStart;
+    border-radius: 10px;
+    color: #fa744f;
   }
 
   &__over {
     position: fixed;
-    width: 100%;
-    height: 100vh;
-    z-index: 2;
+    display: none;
+    box-sizing: border-box;
+    justify-content: center;
+    align-items: center;
+    top: 11%;
+    left: 50%;
+    width: 600px;
+    height: 600px;
+    z-index: 1;
+    transform: translate(-50%, -10%);
+    padding: 20px;
 
-    background-color: rgba(#000, 0.7);
+    border-radius: 20px;
+    background-color: rgba($cellBGColorActive, 0.8);
+  }
+
+  &__over--show {
+    display: flex;
+  }
+
+  &__over-text {
+    margin: 0;
+    color: #fff;
+    font-size: 100px;
+    text-align: center;
   }
 }
