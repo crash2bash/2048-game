@@ -480,9 +480,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function win() {
     const winModal = document.createElement('div');
+    const winModalText = document.createElement('p');
 
     winModal.className = 'game__win-modal';
-    winModal.textContent = 'Вау, ты сделал это!';
+    winModalText.className = 'game__win-modal-text';
+    winModalText.textContent = 'Вау, ты сделал это!';
     sectionGame.append(winModal);
+    winModal.append(winModalText);
   }
 });
