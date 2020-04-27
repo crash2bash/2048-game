@@ -2,6 +2,196 @@
 @import "fonts";
 @import "typography";
 
+html {
+  font-family: "Oswald", sans-serif;
+}
+
 body {
-  background: $c-gray;
+  margin: 0;
+}
+
+.game {
+  &__container {
+    width: $gameContainerWidth;
+    margin: 0 auto;
+  }
+
+  &__field {
+    width: $gameFieldWidth;
+    height: $gameFieldWidth;
+    position: relative;
+
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: $gap;
+
+    background-color: $mainBgColor;
+    border: $fieldBorder solid $mainBgColor;
+    border-radius: $fieldBorder;
+  }
+
+  &__cell {
+    background-color: $cellBGColorStart;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: $mainFontSize;
+
+    color: $cellBGColorStart;
+
+    &--two {
+      background-color: $cellBGColorActive;
+
+      transition: 0.3s ease-in-out;
+    }
+
+    &--eight {
+      background-color: #fa744f;
+      transition: 0.3s ease-in-out;
+    }
+
+    &--third {
+      background-color: #f79071;
+      transition: 0.3s ease-in-out;
+    }
+
+    &--ten {
+      background-color: #f4e04d;
+      transition: 0.3s ease-in-out;
+    }
+
+    &--almost-win {
+      background-color: #b80d57;
+      transition: 0.3s ease-in-out;
+    }
+
+    &--win {
+      background-color: #c81912;
+      transition: 0.3s ease-in-out;
+      font-size: 50px;
+    }
+
+    &__win-modal {
+      position: absolute;
+      width: 524px;
+      height: 524px;
+      box-sizing: border-box;
+      justify-content: center;
+      align-items: center;
+      z-index: 1;
+      padding: 5px;
+
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+
+      background-color: rgba($cellBGColorActive, 0.95);
+      border-radius: $fieldBorder;
+    }
+
+    &__win-modal-text {
+      margin: 0;
+      color: #fff;
+      font-size: 100px;
+      text-align: center;
+    }
+  }
+
+  &__button {
+    width: $buttonWidth;
+    height: $buttonHeight;
+    display: block;
+    margin: $buttonGap auto;
+
+    font-family: "Oswald", sans-serif;
+    font-size: $buttonFontSize;
+    line-height: $buttonFontSize;
+    letter-spacing: 1px;
+
+    border: none;
+    border-radius: $buttonBorderRadius;
+    background-color: $buttonColor;
+    text-transform: uppercase;
+    color: #fff;
+
+    cursor: pointer;
+    outline: none;
+
+    transition: 0.3s ease-in-out;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+
+  &__score-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  &__score {
+    width: 200px;
+    height: 50px;
+    box-sizing: border-box;
+    margin-bottom: 50px;
+    padding-left: 10px;
+    padding-right: 10px;
+
+    font-size: 30px;
+    line-height: 50px;
+
+    background-color: $cellBGColorStart;
+    border-radius: 10px;
+    color: #fa744f;
+
+    &--best {
+      justify-self: end;
+    }
+  }
+
+  &__score-text {
+    margin: 10px 0 5px;
+    width: 200px;
+
+    font-size: 20px;
+    text-align: center;
+    grid-row: 1;
+
+    &--best {
+      justify-self: end;
+    }
+  }
+
+  &__over {
+    display: none;
+    position: absolute;
+    width: 524px;
+    height: 524px;
+    box-sizing: border-box;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+    padding: 5px;
+
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    background-color: rgba($cellBGColorActive, 0.95);
+    border-radius: $fieldBorder;
+  }
+
+  &__over--show {
+    display: flex;
+  }
+
+  &__over-text {
+    margin: 0;
+    color: #fff;
+    font-size: 100px;
+    text-align: center;
+  }
 }
